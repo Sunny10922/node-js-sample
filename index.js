@@ -20,6 +20,26 @@ app.get('/getweather', function(request, responsefromWeb) {
   });
 })
 
-app.listen(app.get('port'), function() {
-  console.log("Node app is running at localhost:" + app.get('port'))
+app.get('/connecttoMC', function(request, responsefromWeb) {
+	var conData = {
+    'clientId': process.env.CLIENT_ID,
+    'clientSecret': process.env.CLIENT_SECRET  
+  	}
+	axios({
+	  method:'post',
+	  url:'https://auth.exacttargetapis.com/v1/requestToken',
+	  data: conData,
+	  headers:{
+       'Content-Type': 'application/json',
+	  }
+	})
+	  .then(function(response) {
+	  	console.log(response);
+	  		responsefromWeb.send('Authorization Sent');
+	  		token = response.data.accessToken;
+	  	
+	}).catch(function (error) {
+	    console.log(error);
+	    responsefromWeb.send(error);
+	  });
 })
